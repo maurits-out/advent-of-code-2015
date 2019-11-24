@@ -22,8 +22,17 @@ public class Assembly {
 
     private final Map<String, Signal> circuitTable;
 
-    private Assembly(String input) {
-        circuitTable = parse(input.lines());
+    Assembly(Stream<String> lines) {
+        circuitTable = parse(lines);
+    }
+
+    Map<String, Integer> getSignalOfAllWires() {
+        Map<String, Integer> wireValues = new HashMap<>();
+        circuitTable.forEach((wire, signal) -> {
+            int value = signal.compute(circuitTable, wireValues);
+            wireValues.put(wire, value);
+        });
+        return wireValues;
     }
 
     private int part1() {
@@ -48,7 +57,7 @@ public class Assembly {
             if (matcher.find()) {
                 String expression = matcher.group(1);
                 String wire = matcher.group(2);
-                circuitTable.put(wire, parseExpression(expression));
+                circuitTable.put(wire, parseSignal(expression));
             } else {
                 throw new IllegalStateException("Could not parse line: " + line);
             }
@@ -56,7 +65,7 @@ public class Assembly {
         return circuitTable;
     }
 
-    private Signal parseExpression(String expr) {
+    private Signal parseSignal(String expr) {
         Matcher matcher = CONSTANT.matcher(expr);
         if (matcher.find()) {
             return new Constant(parseInt(matcher.group()));
@@ -67,30 +76,30 @@ public class Assembly {
         }
         matcher = R_SHIFT_OP.matcher(expr);
         if (matcher.find()) {
-            return new RShiftGate(parseExpression(matcher.group(1)), parseExpression(matcher.group(2)));
+            return new RShiftGate(parseSignal(matcher.group(1)), parseSignal(matcher.group(2)));
         }
         matcher = L_SHIFT_OP.matcher(expr);
         if (matcher.find()) {
-            return new LShiftGate(parseExpression(matcher.group(1)), parseExpression(matcher.group(2)));
+            return new LShiftGate(parseSignal(matcher.group(1)), parseSignal(matcher.group(2)));
         }
         matcher = NOT_OP.matcher(expr);
         if (matcher.find()) {
-            return new NotGate(parseExpression(matcher.group(1)));
+            return new NotGate(parseSignal(matcher.group(1)));
         }
         matcher = AND_OP.matcher(expr);
         if (matcher.find()) {
-            return new AndGate(parseExpression(matcher.group(1)), parseExpression(matcher.group(2)));
+            return new AndGate(parseSignal(matcher.group(1)), parseSignal(matcher.group(2)));
         }
         matcher = OR_OP.matcher(expr);
         if (matcher.find()) {
-            return new OrGate(parseExpression(matcher.group(1)), parseExpression(matcher.group(2)));
+            return new OrGate(parseSignal(matcher.group(1)), parseSignal(matcher.group(2)));
         }
         throw new IllegalArgumentException("Could not parse expression: " + expr);
     }
 
     public static void main(String[] args) {
         String input = loadInput("day07-input.txt");
-        Assembly assembly = new Assembly(input);
+        Assembly assembly = new Assembly(input.lines());
         int a = assembly.part1();
         System.out.printf("Part 1: signal provided to wire a: %d\n", a);
         System.out.printf("Part 2: signal provided to wire a: %d\n", assembly.part2(a));
@@ -161,7 +170,7 @@ abstract class BiGate extends Signal {
     }
 
     @Override
-    final int compute(Map<String, Signal> circuitTable, Map<String, Integer> wireValues) {
+    int compute(Map<String, Signal> circuitTable, Map<String, Integer> wireValues) {
         return apply(left.compute(circuitTable, wireValues), right.compute(circuitTable, wireValues));
     }
 
