@@ -23,6 +23,6 @@ public class GridPart2 extends Grid {
 
     @Override
     public long getResult() {
-        return brightness.values().stream().mapToInt(i -> i).sum();
+        return brightness.values().stream().mapToInt(Integer::intValue).sum();
     }
 }
