@@ -24,6 +24,10 @@ public class Routes {
         return result;
     }
 
+    /**
+     * Heaps algorithm to generate permutations
+     * (https://en.wikipedia.org/wiki/Heap%27s_algorithm)
+     */
     private Stream<List<String>> possibleRoutes() {
         Set<List<String>> routes = new HashSet<>();
 
