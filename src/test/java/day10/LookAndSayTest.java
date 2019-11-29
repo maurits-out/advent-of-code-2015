@@ -18,6 +18,6 @@ class LookAndSayTest {
 
     @Test
     void repeat() {
-        assertEquals(6, lookAndSay.lengthOfResult("1",5));
+        assertEquals(6, lookAndSay.lengthOfResult("1", 5));
     }
 }
