@@ -20,8 +20,8 @@ public class Matchsticks {
     }
 
     private int countCharactersInMemory(String line) {
-        int count = 0;
-        int idx = 1;
+        var count = 0;
+        var idx = 1;
         while (idx < line.length() - 1) {
             if (line.charAt(idx) == '\\') {
                 if (line.charAt(idx + 1) == 'x') {
@@ -47,8 +47,8 @@ public class Matchsticks {
     }
 
     public static void main(String[] args) {
-        String input = loadInput("day08-input.txt");
-        Matchsticks matchsticks = new Matchsticks();
+        var input = loadInput("day08-input.txt");
+        var matchsticks = new Matchsticks();
         System.out.printf("Part 1: %d\n", matchsticks.part1(input.lines()));
         System.out.printf("Part 2: %d\n", matchsticks.part2(input.lines()));
     }

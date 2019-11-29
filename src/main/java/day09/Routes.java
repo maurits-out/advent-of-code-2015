@@ -13,7 +13,7 @@ public class Routes {
     }
 
     private void swap(String[] array, int i, int j) {
-        String temp = array[i];
+        var temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
@@ -31,14 +31,14 @@ public class Routes {
     private Stream<List<String>> possibleRoutes() {
         Set<List<String>> routes = new HashSet<>();
 
-        List<String> locations = List.copyOf(table.getLocations());
-        String[] route = locations.toArray(new String[0]);
+        var locations = List.copyOf(table.getLocations());
+        var route = locations.toArray(new String[0]);
 
-        int[] indices = new int[locations.size()];
+        var indices = new int[locations.size()];
 
         routes.add(locations);
 
-        int current = 0;
+        var current = 0;
         while (current < locations.size()) {
             if (indices[current] < current) {
                 swap(route, current % 2 == 0 ? 0 : indices[current], current);
@@ -55,9 +55,9 @@ public class Routes {
     }
 
     private int distance(List<String> route) {
-        int result = 0;
-        Iterator<String> iterator = route.iterator();
-        String current = iterator.next();
+        var result = 0;
+        var iterator = route.iterator();
+        var current = iterator.next();
         String prev;
         while (iterator.hasNext()) {
             prev = current;
@@ -80,7 +80,7 @@ public class Routes {
     }
 
     public static void main(String[] args) {
-        String input = """
+        var input = """
                 Tristram to AlphaCentauri = 34
                 Tristram to Snowdin = 100
                 Tristram to Tambi = 63
@@ -110,8 +110,8 @@ public class Routes {
                 Norrath to Arbre = 135
                 Straylight to Arbre = 127
                 """;
-        DistanceTable table = new DistanceTable(input.lines());
-        Routes routes = new Routes(table);
+        var table = new DistanceTable(input.lines());
+        var routes = new Routes(table);
         System.out.printf("Shortest route (part 1): %d\n", routes.shortestRoute());
         System.out.printf("Longest route  (part 2): %d\n", routes.longestRoute());
     }

@@ -29,7 +29,7 @@ public class Assembly {
     Map<String, Integer> getSignalOfAllWires() {
         Map<String, Integer> wireValues = new HashMap<>();
         circuitTable.forEach((wire, signal) -> {
-            int value = signal.compute(circuitTable, wireValues);
+            var value = signal.compute(circuitTable, wireValues);
             wireValues.put(wire, value);
         });
         return wireValues;
@@ -46,7 +46,7 @@ public class Assembly {
     }
 
     private int getSignalOfWireA(Map<String, Integer> wireValues) {
-        Signal signal = circuitTable.get("a");
+        var signal = circuitTable.get("a");
         return signal.compute(circuitTable, wireValues);
     }
 
@@ -55,8 +55,8 @@ public class Assembly {
         lines.forEach(line -> {
             Matcher matcher = INSTRUCTION.matcher(line);
             if (matcher.find()) {
-                String expression = matcher.group(1);
-                String wire = matcher.group(2);
+                var expression = matcher.group(1);
+                var wire = matcher.group(2);
                 circuitTable.put(wire, parseSignal(expression));
             } else {
                 throw new IllegalStateException("Could not parse line: " + line);
@@ -66,7 +66,7 @@ public class Assembly {
     }
 
     private Signal parseSignal(String expr) {
-        Matcher matcher = CONSTANT.matcher(expr);
+        var matcher = CONSTANT.matcher(expr);
         if (matcher.find()) {
             return new Constant(parseInt(matcher.group()));
         }
@@ -98,9 +98,9 @@ public class Assembly {
     }
 
     public static void main(String[] args) {
-        String input = loadInput("day07-input.txt");
-        Assembly assembly = new Assembly(input.lines());
-        int a = assembly.part1();
+        var input = loadInput("day07-input.txt");
+        var assembly = new Assembly(input.lines());
+        var a = assembly.part1();
         System.out.printf("Part 1: signal provided to wire a: %d\n", a);
         System.out.printf("Part 2: signal provided to wire a: %d\n", assembly.part2(a));
     }
@@ -124,8 +124,8 @@ class Wire extends Signal {
         if (wireValues.containsKey(id)) {
             return wireValues.get(id);
         }
-        Signal signal = circuitTable.get(id);
-        int result = signal.compute(circuitTable, wireValues);
+        var signal = circuitTable.get(id);
+        var result = signal.compute(circuitTable, wireValues);
         wireValues.put(id, result);
         return result;
     }

@@ -14,10 +14,10 @@ class DistanceTable {
     private final Set<String> locations = new HashSet<>();
 
     DistanceTable(Stream<String> lines) {
-        Pattern pattern = Pattern.compile("^(.+) to (.+) = (\\d+)$");
+        var pattern = Pattern.compile("^(.+) to (.+) = (\\d+)$");
         lines.map(pattern::matcher).filter(Matcher::find).forEach(matcher -> {
-            String location1 = matcher.group(1);
-            String location2 = matcher.group(2);
+            var location1 = matcher.group(1);
+            var location2 = matcher.group(2);
             int distance = Integer.parseInt(matcher.group(3));
             locations.add(location1);
             locations.add(location2);

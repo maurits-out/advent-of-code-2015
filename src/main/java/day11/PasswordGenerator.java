@@ -1,16 +1,15 @@
 package day11;
 
-import java.util.IntSummaryStatistics;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import static java.util.stream.IntStream.range;
+import static java.util.stream.Stream.iterate;
 
 public class PasswordGenerator {
 
     private static final String ILLEGAL_CHARACTERS = "iol";
 
     String increment(String password) {
-        char[] chars = password.toCharArray();
-        int idx = chars.length - 1;
+        var chars = password.toCharArray();
+        var idx = chars.length - 1;
         while (chars[idx] == 'z') {
             chars[idx] = 'a';
             idx--;
@@ -20,7 +19,7 @@ public class PasswordGenerator {
     }
 
     boolean hasIncreasingStraightOfThreeLetters(String candidate) {
-        return IntStream.range(0, candidate.length() - 2)
+        return range(0, candidate.length() - 2)
                 .anyMatch(idx -> isStraightOfThree(candidate, idx));
     }
 
@@ -34,7 +33,7 @@ public class PasswordGenerator {
     }
 
     boolean containsAtLeastTwoDifferentNonOverlappingPairsOfCharacters(String candidate) {
-        IntSummaryStatistics statistics = IntStream.range(0, candidate.length() - 1)
+        var statistics = range(0, candidate.length() - 1)
                 .filter(idx -> candidate.charAt(idx) == candidate.charAt(idx + 1))
                 .summaryStatistics();
         return statistics.getMax() - statistics.getMin() > 1;
@@ -47,15 +46,15 @@ public class PasswordGenerator {
     }
 
     String nextPassword(String password) {
-        return Stream.iterate(increment(password), this::increment)
+        return iterate(increment(password), this::increment)
                 .filter(this::isValidPassword)
                 .findFirst()
                 .orElseThrow();
     }
 
     public static void main(String[] args) {
-        PasswordGenerator generator = new PasswordGenerator();
-        String next = generator.nextPassword("cqjxjnds");
+        var generator = new PasswordGenerator();
+        var next = generator.nextPassword("cqjxjnds");
         System.out.printf("Next password (part 1): %s\n", next);
         System.out.printf("Next password (part 2): %s\n", generator.nextPassword(next));
     }
