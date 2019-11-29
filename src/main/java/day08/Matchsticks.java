@@ -21,16 +21,13 @@ public class Matchsticks {
 
     private int countCharactersInMemory(String line) {
         var count = 0;
-        var idx = 1;
-        while (idx < line.length() - 1) {
+        for (int idx = 1; idx < line.length() - 1; idx++, count++) {
             if (line.charAt(idx) == '\\') {
                 if (line.charAt(idx + 1) == 'x') {
                     idx += 2;
                 }
                 idx++;
             }
-            count++;
-            idx++;
         }
         return count;
     }

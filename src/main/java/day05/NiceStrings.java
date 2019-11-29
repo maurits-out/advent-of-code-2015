@@ -1,12 +1,10 @@
 package day05;
 
-import support.InputLoader;
-
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.util.stream.IntStream.range;
 import static support.InputLoader.loadInput;
 
 class NiceStrings {
@@ -27,8 +25,7 @@ class NiceStrings {
     }
 
     private Stream<String> extractPairs(String string) {
-        return IntStream
-                .range(0, string.length() - 1)
+        return range(0, string.length() - 1)
                 .boxed()
                 .map(idx -> string.substring(idx, idx + 2));
     }
@@ -38,8 +35,7 @@ class NiceStrings {
     }
 
     private boolean occursAtLeastTwiceWithoutOverlapping(String string, String pair) {
-        var statistics = IntStream
-                .range(0, string.length() - 1)
+        var statistics = range(0, string.length() - 1)
                 .filter(idx -> string.substring(idx).startsWith(pair))
                 .summaryStatistics();
         return statistics.getMax() - statistics.getMin() > 1;
@@ -54,8 +50,7 @@ class NiceStrings {
     }
 
     private boolean containsAtLeastOneLetterWhichRepeatsWithOneLetterInBetween(String string) {
-        return IntStream
-                .range(0, string.length() - 2)
+        return range(0, string.length() - 2)
                 .anyMatch(idx -> string.charAt(idx) == string.charAt(idx + 2));
     }
 
