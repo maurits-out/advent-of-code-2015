@@ -25,7 +25,8 @@ public class PasswordGenerator {
     }
 
     private boolean isStraightOfThree(String candidate, int idx) {
-        return candidate.charAt(idx + 1) - candidate.charAt(idx) == 1 && candidate.charAt(idx + 2) - candidate.charAt(idx + 1) == 1;
+        return candidate.charAt(idx + 1) - candidate.charAt(idx) == 1 &&
+                candidate.charAt(idx + 2) - candidate.charAt(idx + 1) == 1;
     }
 
     boolean containsIllegalCharacters(String candidate) {
