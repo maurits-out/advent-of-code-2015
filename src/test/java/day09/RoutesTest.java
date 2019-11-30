@@ -12,10 +12,10 @@ class RoutesTest {
     @BeforeEach
     void setUp() {
         String input = """
-                London to Dublin = 464
-                London to Belfast = 518
-                Dublin to Belfast = 141
-                """;
+                       London to Dublin = 464
+                       London to Belfast = 518
+                       Dublin to Belfast = 141
+                       """;
         DistanceTable table = new DistanceTable(input.lines());
         routes = new Routes(table);
     }
