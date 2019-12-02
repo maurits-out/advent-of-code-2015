@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.lang.System.arraycopy;
 import static java.util.stream.IntStream.range;
 import static support.InputLoader.loadInput;
 
@@ -23,7 +24,7 @@ public class DinnerTable {
 
     private String[] copy(String[] array) {
         String[] result = new String[array.length];
-        System.arraycopy(array, 0, result, 0, array.length);
+        arraycopy(array, 0, result, 0, array.length);
         return result;
     }
 
@@ -74,7 +75,9 @@ public class DinnerTable {
         var input = loadInput("day13-input.txt");
         var happinessUnits = new HappinessUnits(input);
         var dinnerTable = new DinnerTable(happinessUnits);
-        System.out.printf("Total change in happiness for the optimal seating arrangement (part 1): %d\n", dinnerTable.totalChangeInHappinessForOptimalSeatingArrangement(false));
-        System.out.printf("Total change in happiness for the optimal seating arrangement (part 2): %d\n", dinnerTable.totalChangeInHappinessForOptimalSeatingArrangement(true));
+        System.out.printf("Total change in happiness for the optimal seating arrangement (part 1): %d\n",
+                dinnerTable.totalChangeInHappinessForOptimalSeatingArrangement(false));
+        System.out.printf("Total change in happiness for the optimal seating arrangement (part 2): %d\n",
+                dinnerTable.totalChangeInHappinessForOptimalSeatingArrangement(true));
     }
 }
