@@ -11,12 +11,13 @@ import java.util.stream.Stream;
 import static day15.Ingredient.Property.*;
 import static java.lang.Integer.parseInt;
 import static java.lang.Math.max;
+import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.rangeClosed;
 
 class Cookies {
 
-    private static final Pattern PATTERN = Pattern.compile("(\\w+): capacity (-?[0-9]+), durability (-?[0-9]+), flavor (-?[0-9]+), texture (-?[0-9]+), calories (-?[0-9]+)");
+    private static final Pattern PATTERN = compile("(\\w+): capacity (-?[0-9]+), durability (-?[0-9]+), flavor (-?[0-9]+), texture (-?[0-9]+), calories (-?[0-9]+)");
     private static final int NUM_TEASPOONS = 100;
 
     private final Map<String, Ingredient> ingredients;
@@ -42,9 +43,11 @@ class Cookies {
     }
 
     private int totalScore(Map<String, Integer> teaspoons) {
-        return Stream.of(Property.values()).filter(p -> p != CALORIES).reduce(1,
-                (acc, property) -> acc * totalValueOfProperty(property, teaspoons),
-                (acc1, acc2) -> acc1 * acc2);
+        return Stream.of(Property.values())
+                .filter(p -> p != CALORIES)
+                .reduce(1,
+                        (acc, property) -> acc * totalValueOfProperty(property, teaspoons),
+                        (acc1, acc2) -> acc1 * acc2);
     }
 
     private Stream<Map<String, Integer>> teaspoons() {
