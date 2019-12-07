@@ -43,8 +43,8 @@ public class AuntSue {
 
     public static void main(String[] args) {
         var input = loadInput("day16-input.txt");
-        AuntSue auntSue = new AuntSue(input);
-        Map<String, Integer> tickerTape = Map.of("children", 3, "cats", 7, "samoyeds", 2, "pomeranians", 3, "akitas", 0, "vizslas", 0, "goldfish", 5, "trees", 3, "cars", 2, "perfumes", 1);
+        var auntSue = new AuntSue(input);
+        var tickerTape = Map.of("children", 3, "cats", 7, "samoyeds", 2, "pomeranians", 3, "akitas", 0, "vizslas", 0, "goldfish", 5, "trees", 3, "cars", 2, "perfumes", 1);
         System.out.printf("Number of Sue (part 1): %d\n", auntSue.findMatchingAuntSuePart1(tickerTape));
         System.out.printf("Number of Sue (part 2): %d\n", auntSue.findMatchingAuntSuePart2(tickerTape));
     }
