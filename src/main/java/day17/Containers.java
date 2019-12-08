@@ -31,7 +31,7 @@ public class Containers {
         if (current == containerSizes.length) {
             return emptyMap();
         }
-        Map<Integer, Integer> withoutCurrentContainer = countCombinations(liters, current + 1, containersInUse);
+        var withoutCurrentContainer = countCombinations(liters, current + 1, containersInUse);
         if (containerSizes[current] <= liters) {
             var withCurrentContainer = countCombinations(liters - containerSizes[current], current + 1, containersInUse + 1);
             return concat(withoutCurrentContainer.entrySet().stream(), withCurrentContainer.entrySet().stream())
