@@ -27,7 +27,7 @@ public class Medicine {
     }
 
     long countDistinctMoleculesAfterOneReplacement() {
-        return generateNewMolecules(medicineMolecule, Replacement::getLeft, Replacement::getRight)
+        return generateNewMolecules(medicineMolecule, Replacement::getLeftHandSide, Replacement::getRightHandSide)
                 .distinct()
                 .count();
     }
@@ -40,7 +40,7 @@ public class Medicine {
         if (molecule.equals("e")) {
             return OptionalInt.of(steps);
         }
-        return generateNewMolecules(molecule, Replacement::getRight, Replacement::getLeft)
+        return generateNewMolecules(molecule, Replacement::getRightHandSide, Replacement::getLeftHandSide)
                 .map(s -> minimumNumberOfStepsToGenerateMedicineMolecule(s, steps + 1))
                 .filter(OptionalInt::isPresent)
                 .mapToInt(OptionalInt::getAsInt)
@@ -141,25 +141,20 @@ public class Medicine {
 }
 
 class Replacement {
-    private final String left;
-    private final String right;
+    private final String leftHandSide;
+    private final String rightHandSide;
 
-    public Replacement(String left, String right) {
-        this.left = left;
-        this.right = right;
+    public Replacement(String leftHandSide, String rightHandSide) {
+        this.leftHandSide = leftHandSide;
+        this.rightHandSide = rightHandSide;
     }
 
-    public String getLeft() {
-        return left;
+    public String getLeftHandSide() {
+        return leftHandSide;
     }
 
-    public String getRight() {
-        return right;
-    }
-
-    @Override
-    public String toString() {
-        return left + " => " + right;
+    public String getRightHandSide() {
+        return rightHandSide;
     }
 
     @Override
@@ -167,12 +162,12 @@ class Replacement {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Replacement that = (Replacement) o;
-        return left.equals(that.left) &&
-                right.equals(that.right);
+        return leftHandSide.equals(that.leftHandSide) &&
+                rightHandSide.equals(that.rightHandSide);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(left, right);
+        return Objects.hash(leftHandSide, rightHandSide);
     }
 }
