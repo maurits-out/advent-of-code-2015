@@ -31,7 +31,7 @@ public class InfiniteElves {
 
     private int sumOfFactors(int houseNumber) {
         var result = 1;
-        for (int i = 2; i <= sqrt(houseNumber); i++) {
+        for (var i = 2; i <= sqrt(houseNumber); i++) {
             var sum = 1;
             var term = 1;
             while (houseNumber % i == 0) {
