@@ -64,7 +64,7 @@ public class RPGSimulator20XX {
         var armor = shop.getArmor();
         var rings = shop.getRings();
 
-        ArrayList<Configuration> configurations = new ArrayList<>();
+        var configurations = new ArrayList<Configuration>();
         for (Item weapon : weapons) {
             for (Item item : armor) {
                 for (var k = 0; k < rings.size() - 1; k++) {
