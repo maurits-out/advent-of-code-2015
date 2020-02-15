@@ -41,10 +41,7 @@ public class WizardSimulator20XX {
         if (playerWins(state)) {
             return manaSpent;
         }
-        if (bossWins(state)) {
-            return MAX_VALUE;
-        }
-        if (spentAlreadyMoreThanCurrentMinimum(manaSpent, currentMinimum)) {
+        if (bossWins(state) || spentAlreadyMoreThanCurrentMinimum(manaSpent, currentMinimum)) {
             return MAX_VALUE;
         }
 
