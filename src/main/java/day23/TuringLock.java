@@ -1,12 +1,11 @@
 package day23;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static day23.InstructionType.*;
+import static java.lang.Integer.parseInt;
+import static support.InputLoader.loadInput;
 
 public class TuringLock {
 
@@ -17,8 +16,13 @@ public class TuringLock {
     private static final Pattern JIE_PATTERN = Pattern.compile("^jie ([ab]), ([-+]\\d+)$");
     private static final Pattern JIO_PATTERN = Pattern.compile("^jio ([ab]), ([-+]\\d+)$");
 
-    Instruction[] parseProgram(Stream<String> lines) {
-        return lines.map(this::parseLine).toArray(Instruction[]::new);
+    private final Instruction[] instructions;
+
+    public TuringLock(String input) {
+        instructions = input
+                .lines()
+                .map(this::parseLine)
+                .toArray(Instruction[]::new);
     }
 
     Instruction parseLine(String line) {
@@ -36,94 +40,40 @@ public class TuringLock {
         }
         matcher = JMP_PATTERN.matcher(line);
         if (matcher.find()) {
-            return new Instruction(JUMP, null, parseOffset(matcher, 0));
+            return new Instruction(JUMP, null, parseOffset(matcher, 1));
         }
         matcher = JIE_PATTERN.matcher(line);
         if (matcher.find()) {
-            return new Instruction(JUMP_IF_EVEN, parseRegister(matcher), parseOffset(matcher, 1));
+            return new Instruction(JUMP_IF_EVEN, parseRegister(matcher), parseOffset(matcher, 2));
         }
         matcher = JIO_PATTERN.matcher(line);
         if (matcher.find()) {
-            return new Instruction(JUMP_IF_ONE, parseRegister(matcher), parseOffset(matcher, 1));
+            return new Instruction(JUMP_IF_ONE, parseRegister(matcher), parseOffset(matcher, 2));
         }
         throw new IllegalArgumentException("Could not parse line: " + line);
     }
 
+    int executeAndReturnValueOfB(int initialValueOfA) {
+        var state = new State();
+        state.updateRegister('a', initialValueOfA);
+        while (state.getInstructionPointer() >= 0 && state.getInstructionPointer() < instructions.length) {
+            instructions[state.getInstructionPointer()].evaluate(state);
+        }
+        return state.getRegister('b');
+    }
+
     private int parseOffset(Matcher matcher, int group) {
-        return Integer.parseInt(matcher.group(group));
+        return parseInt(matcher.group(group));
     }
 
     private char parseRegister(Matcher matcher) {
-        return matcher.group(0).charAt(0);
-    }
-}
-
-enum InstructionType {
-    HALF,
-    TRIPLE,
-    INCREMENT,
-    JUMP,
-    JUMP_IF_EVEN,
-    JUMP_IF_ONE
-}
-
-final class Instruction {
-    private final InstructionType type;
-    private final Character register;
-    private final Integer offset;
-
-    public Instruction(InstructionType type, Character register, Integer offset) {
-        this.type = type;
-        this.register = register;
-        this.offset = offset;
+        return matcher.group(1).charAt(0);
     }
 
-    void evaluate(State state) {
-        switch (type) {
-            case HALF -> {
-                state.updateRegister(register, state.getRegister(register) / 2);
-                state.updateInstructionPointer(offset);
-            }
-            case TRIPLE -> {
-                state.updateRegister(register, state.getRegister(register) * 3);
-                state.updateInstructionPointer(offset);
-            }
-            case INCREMENT -> {
-                state.updateRegister(register, state.getRegister(register) + 1);
-                state.updateInstructionPointer(offset);
-            }
-            case JUMP -> state.updateInstructionPointer(offset);
-            case JUMP_IF_EVEN -> {
-                boolean isEven = state.getRegister(register) % 2 == 0;
-                state.updateInstructionPointer(isEven ? offset : 1);
-            }
-            case JUMP_IF_ONE -> {
-                boolean isOne = state.getRegister(register) == 1;
-                state.updateInstructionPointer(isOne ? offset : 1);
-            }
-            default -> throw new IllegalStateException("Unsupported instruction: " + type);
-        }
-    }
-}
-
-final class State {
-
-    private final Map<Character, Integer> registers = new HashMap<>();
-    private int instructionPointer = 0;
-
-    public int getRegister(char register) {
-        return registers.getOrDefault(register, 0);
-    }
-
-    public int getInstructionPointer() {
-        return instructionPointer;
-    }
-
-    public void updateInstructionPointer(int offset) {
-        instructionPointer += offset;
-    }
-
-    public void updateRegister(char register, int value) {
-        registers.put(register, value);
+    public static void main(String[] args) {
+        var input = loadInput("day23-input.txt");
+        var turingLock = new TuringLock(input);
+        System.out.printf("Value of b after evaluating the instructions (part 1): %d\n", turingLock.executeAndReturnValueOfB(0));
+        System.out.printf("Value of b after evaluating the instructions (part 2): %d\n", turingLock.executeAndReturnValueOfB(1));
     }
 }
