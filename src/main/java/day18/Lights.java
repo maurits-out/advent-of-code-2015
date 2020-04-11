@@ -1,7 +1,6 @@
 package day18;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -14,6 +13,9 @@ public class Lights {
 
     private final int dimension;
     private final String[] inputLines;
+
+    static record Cell(int row, int column) {
+    }
 
     Lights(String input) {
         inputLines = input.lines().toArray(String[]::new);
@@ -63,10 +65,10 @@ public class Lights {
     }
 
     private Set<Cell> neighbors(Cell cell) {
-        return rangeClosed(cell.getRow() - 1, cell.getRow() + 1)
+        return rangeClosed(cell.row() - 1, cell.row() + 1)
                 .filter(r -> r >= 0 && r < dimension)
                 .boxed()
-                .flatMap(r -> rangeClosed(cell.getColumn() - 1, cell.getColumn() + 1)
+                .flatMap(r -> rangeClosed(cell.column() - 1, cell.column() + 1)
                         .filter(c -> c >= 0 && c < dimension)
                         .mapToObj(c -> new Cell(r, c)))
                 .filter(c -> !c.equals(cell))
@@ -103,34 +105,3 @@ public class Lights {
     }
 }
 
-class Cell {
-
-    private final int row;
-    private final int column;
-
-    public Cell(int row, int column) {
-        this.row = row;
-        this.column = column;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public int getColumn() {
-        return column;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        var cell = (Cell) o;
-        return row == cell.row && column == cell.column;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(row, column);
-    }
-}

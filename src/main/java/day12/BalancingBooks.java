@@ -23,17 +23,17 @@ public class BalancingBooks {
     }
 
     private int sum(Object object, boolean ignoreRed) {
-        if (object instanceof JSONArray) {
-            return sum((JSONArray) object, ignoreRed);
+        if (object instanceof JSONArray array) {
+            return sum(array, ignoreRed);
         }
-        if (object instanceof JSONObject) {
-            return sum((JSONObject) object, ignoreRed);
+        if (object instanceof JSONObject jsonObject) {
+            return sum(jsonObject, ignoreRed);
         }
         if (object instanceof String) {
             return 0;
         }
-        if (object instanceof Integer) {
-            return (Integer) object;
+        if (object instanceof Integer number) {
+            return number;
         }
         throw new IllegalStateException("Unsupported class: " + object.getClass().getSimpleName());
     }

@@ -1,15 +1,6 @@
 package day23;
 
-final class Instruction {
-    private final InstructionType type;
-    private final Character register;
-    private final Integer offset;
-
-    public Instruction(InstructionType type, Character register, Integer offset) {
-        this.type = type;
-        this.register = register;
-        this.offset = offset;
-    }
+final record Instruction(InstructionType type, Character register, Integer offset) {
 
     void evaluate(State state) {
         switch (type) {

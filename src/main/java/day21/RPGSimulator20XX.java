@@ -3,6 +3,7 @@ package day21;
 import java.util.ArrayList;
 import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.function.ToIntFunction;
 
 import static java.lang.Math.max;
 import static java.util.stream.Collectors.partitioningBy;
@@ -24,7 +25,7 @@ public class RPGSimulator20XX {
     }
 
     private IntSummaryStatistics statistics(List<Configuration> configurations) {
-        return configurations.stream().mapToInt(Configuration::getTotalCost).summaryStatistics();
+        return configurations.stream().mapToInt(Configuration::totalCost).summaryStatistics();
     }
 
     int leastAmountOfGoldToWinTheFight() {
@@ -36,16 +37,16 @@ public class RPGSimulator20XX {
     }
 
     private boolean playerWins(Configuration c) {
-        var playerStats = new Stats(playerHitPoints, c.getTotalDamage(), c.getTotalArmor());
+        var playerStats = new Stats(playerHitPoints, c.totalDamage(), c.totalArmor());
         return playerWins(playerStats);
     }
 
     private boolean playerWins(Stats playerStats) {
-        var damageDealtByPlayer = max(playerStats.getDamage() - bossStats.getArmor(), 1);
-        var damageDealtByBoss = max(bossStats.getDamage() - playerStats.getArmor(), 1);
+        var damageDealtByPlayer = max(playerStats.damage() - bossStats.armor(), 1);
+        var damageDealtByBoss = max(bossStats.damage() - playerStats.armor(), 1);
 
-        var currentHintPointsPlayer = playerStats.getHitPoints();
-        var currentHintPointsBoss = bossStats.getHitPoints();
+        var currentHintPointsPlayer = playerStats.hitPoints();
+        var currentHintPointsBoss = bossStats.hitPoints();
         var playersTurn = true;
         while (currentHintPointsPlayer > 0 && currentHintPointsBoss > 0) {
             if (playersTurn) {
@@ -60,16 +61,13 @@ public class RPGSimulator20XX {
 
     private List<Configuration> createConfigurations() {
         var shop = new Shop();
-        var weapons = shop.getWeapons();
-        var armor = shop.getArmor();
-        var rings = shop.getRings();
 
         var configurations = new ArrayList<Configuration>();
-        for (Item weapon : weapons) {
-            for (Item item : armor) {
-                for (var k = 0; k < rings.size() - 1; k++) {
-                    for (var l = k + 1; l < rings.size(); l++) {
-                        var items = List.of(weapon, item, rings.get(k), rings.get(l));
+        for (Item weapon : shop.weapons()) {
+            for (Item item : shop.armor()) {
+                for (var k = 0; k < shop.rings().size() - 1; k++) {
+                    for (var l = k + 1; l < shop.rings().size(); l++) {
+                        var items = List.of(weapon, item, shop.rings().get(k), shop.rings().get(l));
                         configurations.add(new Configuration(items));
                     }
                 }
@@ -86,78 +84,27 @@ public class RPGSimulator20XX {
     }
 }
 
-class Stats {
-    private final int hitPoints;
-    private final int damage;
-    private final int armor;
-
-    public Stats(int hitPoints, int damage, int armor) {
-        this.hitPoints = hitPoints;
-        this.damage = damage;
-        this.armor = armor;
-    }
-
-    public int getHitPoints() {
-        return hitPoints;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public int getArmor() {
-        return armor;
-    }
+record Stats(int hitPoints, int damage, int armor) {
 }
 
-class Configuration {
-    private final int totalCost;
-    private final int totalArmor;
-    private final int totalDamage;
+record Configuration(int totalCost, int totalArmor, int totalDamage) {
 
     public Configuration(List<Item> items) {
-        totalCost = items.stream().mapToInt(Item::getCost).sum();
-        totalArmor = items.stream().mapToInt(Item::getArmor).sum();
-        totalDamage = items.stream().mapToInt(Item::getDamage).sum();
+        this(sum(items, Item::cost), sum(items, Item::armor), sum(items, Item::damage));
     }
 
-    public int getTotalCost() {
-        return totalCost;
-    }
-
-    public int getTotalArmor() {
-        return totalArmor;
-    }
-
-    public int getTotalDamage() {
-        return totalDamage;
+    private static int sum(List<Item> items, ToIntFunction<Item> property) {
+        return items.stream().mapToInt(property).sum();
     }
 }
 
-class Shop {
-    private final List<Item> weapons;
-    private final List<Item> armor;
-    private final List<Item> rings;
+record Shop(List<Item>weapons, List<Item>armor, List<Item>rings) {
 
     public Shop() {
-        weapons = createWeapons();
-        armor = createArmor();
-        rings = createRings();
+        this(createWeapons(), createArmor(), createRings());
     }
 
-    public List<Item> getWeapons() {
-        return weapons;
-    }
-
-    public List<Item> getArmor() {
-        return armor;
-    }
-
-    public List<Item> getRings() {
-        return rings;
-    }
-
-    private List<Item> createWeapons() {
+    private static List<Item> createWeapons() {
         return List.of(
                 new Item(8, 4, 0),
                 new Item(10, 5, 0),
@@ -166,7 +113,7 @@ class Shop {
                 new Item(74, 8, 0));
     }
 
-    private List<Item> createArmor() {
+    private static List<Item> createArmor() {
         return List.of(
                 new Item(0, 0, 0),
                 new Item(13, 0, 1),
@@ -176,7 +123,7 @@ class Shop {
                 new Item(102, 0, 5));
     }
 
-    private List<Item> createRings() {
+    private static List<Item> createRings() {
         return List.of(
                 new Item(0, 0, 0),
                 new Item(0, 0, 0),
@@ -189,26 +136,5 @@ class Shop {
     }
 }
 
-class Item {
-    private final int cost;
-    private final int damage;
-    private final int armor;
-
-    public Item(int cost, int damage, int armor) {
-        this.cost = cost;
-        this.damage = damage;
-        this.armor = armor;
-    }
-
-    public int getCost() {
-        return cost;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public int getArmor() {
-        return armor;
-    }
+record Item(int cost, int damage, int armor) {
 }

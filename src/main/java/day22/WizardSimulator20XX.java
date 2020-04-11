@@ -82,11 +82,11 @@ public class WizardSimulator20XX {
 
     private State playerLoosesOneHitPoint(State state) {
         return new State(
-                state.getPlayerHitPoints() - 1,
-                state.getPlayerMana(),
-                state.getPlayerArmor(),
-                state.getBossHitPoints(),
-                state.getEffectTimers());
+                state.playerHitPoints() - 1,
+                state.playerMana(),
+                state.playerArmor(),
+                state.bossHitPoints(),
+                state.effectTimers());
     }
 
     private boolean spentAlreadyMoreThanCurrentMinimum(int manaSpent, int currentMinimum) {
@@ -95,24 +95,24 @@ public class WizardSimulator20XX {
 
     private State applyEffectsAndDecrementTimers(State state) {
 
-        var bossHitPoints = state.getBossHitPoints();
+        var bossHitPoints = state.bossHitPoints();
         if (state.hasEffect(POISON)) {
             bossHitPoints -= POISON_DAMAGE_TO_BOSS;
         }
 
-        var playerMana = state.getPlayerMana();
+        var playerMana = state.playerMana();
         if (state.hasEffect(RECHARGE)) {
             playerMana += RECHARGE_MANA;
         }
 
-        var timers = state.getEffectTimers();
+        var timers = state.effectTimers();
 
-        var playerArmor = state.getPlayerArmor();
+        var playerArmor = state.playerArmor();
         if (timers.containsKey(SHIELD) && timers.get(SHIELD) == 1) {
             playerArmor -= SHIELD_ARMOR_INCREASE;
         }
 
-        return new State(state.getPlayerHitPoints(), playerMana, playerArmor, bossHitPoints, decrementTimers(timers));
+        return new State(state.playerHitPoints(), playerMana, playerArmor, bossHitPoints, decrementTimers(timers));
     }
 
     private Map<Effect, Integer> decrementTimers(Map<Effect, Integer> effectTimers) {
@@ -124,92 +124,92 @@ public class WizardSimulator20XX {
     }
 
     private boolean canCastRecharge(State state) {
-        return state.getPlayerMana() >= RECHARGE_COST && !state.hasEffect(RECHARGE);
+        return state.playerMana() >= RECHARGE_COST && !state.hasEffect(RECHARGE);
     }
 
     private State castRecharge(State state) {
         return new State(
-                state.getPlayerHitPoints(),
-                state.getPlayerMana() - RECHARGE_COST,
-                state.getPlayerArmor(),
-                state.getBossHitPoints(),
+                state.playerHitPoints(),
+                state.playerMana() - RECHARGE_COST,
+                state.playerArmor(),
+                state.bossHitPoints(),
                 addEffect(state, RECHARGE));
     }
 
     private boolean canCastShield(State state) {
-        return state.getPlayerMana() >= SHIELD_COST && !state.hasEffect(SHIELD);
+        return state.playerMana() >= SHIELD_COST && !state.hasEffect(SHIELD);
     }
 
     private State castShield(State state) {
         return new State(
-                state.getPlayerHitPoints(),
-                state.getPlayerMana() - SHIELD_COST,
-                state.getPlayerArmor() + SHIELD_ARMOR_INCREASE,
-                state.getBossHitPoints(),
+                state.playerHitPoints(),
+                state.playerMana() - SHIELD_COST,
+                state.playerArmor() + SHIELD_ARMOR_INCREASE,
+                state.bossHitPoints(),
                 addEffect(state, SHIELD));
     }
 
     private boolean canCastPoison(State state) {
-        return state.getPlayerMana() >= POISON_COST && !state.hasEffect(POISON);
+        return state.playerMana() >= POISON_COST && !state.hasEffect(POISON);
     }
 
     private State castPoison(State state) {
         return new State(
-                state.getPlayerHitPoints(),
-                state.getPlayerMana() - POISON_COST,
-                state.getPlayerArmor(),
-                state.getBossHitPoints(),
+                state.playerHitPoints(),
+                state.playerMana() - POISON_COST,
+                state.playerArmor(),
+                state.bossHitPoints(),
                 addEffect(state, POISON));
     }
 
     private boolean canCastDrain(State state) {
-        return state.getPlayerMana() >= DRAIN_COST;
+        return state.playerMana() >= DRAIN_COST;
     }
 
     private State castDrain(State state) {
         return new State(
-                state.getPlayerHitPoints() + DRAIN_HEALING,
-                state.getPlayerMana() - DRAIN_COST,
-                state.getPlayerArmor(),
-                state.getBossHitPoints() - DRAIN_DAMAGE,
-                state.getEffectTimers());
+                state.playerHitPoints() + DRAIN_HEALING,
+                state.playerMana() - DRAIN_COST,
+                state.playerArmor(),
+                state.bossHitPoints() - DRAIN_DAMAGE,
+                state.effectTimers());
     }
 
     private boolean canCastMagicMissile(State state) {
-        return state.getPlayerMana() >= MAGIC_MISSILE_COST;
+        return state.playerMana() >= MAGIC_MISSILE_COST;
     }
 
     private Map<Effect, Integer> addEffect(State state, Effect effect) {
-        var effectTimers = new HashMap<>(state.getEffectTimers());
+        var effectTimers = new HashMap<>(state.effectTimers());
         effectTimers.put(effect, effect.getTimer());
         return effectTimers;
     }
 
     private State castMagicMissile(State state) {
         return new State(
-                state.getPlayerHitPoints(),
-                state.getPlayerMana() - MAGIC_MISSILE_COST,
-                state.getPlayerArmor(),
-                state.getBossHitPoints() - MAGIC_MISSILE_DAMAGE,
-                state.getEffectTimers());
+                state.playerHitPoints(),
+                state.playerMana() - MAGIC_MISSILE_COST,
+                state.playerArmor(),
+                state.bossHitPoints() - MAGIC_MISSILE_DAMAGE,
+                state.effectTimers());
     }
 
     private State bossAttacks(State state) {
-        var damageDealtByBoss = max(BOSS_DAMAGE - state.getPlayerArmor(), 1);
+        var damageDealtByBoss = max(BOSS_DAMAGE - state.playerArmor(), 1);
         return new State(
-                state.getPlayerHitPoints() - damageDealtByBoss,
-                state.getPlayerMana(),
-                state.getPlayerArmor(),
-                state.getBossHitPoints(),
-                state.getEffectTimers());
+                state.playerHitPoints() - damageDealtByBoss,
+                state.playerMana(),
+                state.playerArmor(),
+                state.bossHitPoints(),
+                state.effectTimers());
     }
 
     private boolean bossWins(State state) {
-        return state.getPlayerHitPoints() <= 0;
+        return state.playerHitPoints() <= 0;
     }
 
     private boolean playerWins(State state) {
-        return state.getBossHitPoints() <= 0;
+        return state.bossHitPoints() <= 0;
     }
 
     public static void main(String[] args) {

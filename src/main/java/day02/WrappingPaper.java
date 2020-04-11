@@ -33,17 +33,7 @@ public class WrappingPaper {
     }
 }
 
-class Present {
-
-    private final int length;
-    private final int width;
-    private final int height;
-
-    private Present(int length, int width, int height) {
-        this.length = length;
-        this.width = width;
-        this.height = height;
-    }
+record Present(int length, int width, int height) {
 
     static Present parse(String dimensions) {
         var tokenizer = new StringTokenizer(dimensions, "x");

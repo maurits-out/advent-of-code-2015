@@ -1,6 +1,5 @@
 package day19;
 
-import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.Function;
@@ -16,6 +15,9 @@ import static java.util.stream.IntStream.range;
 
 public class Medicine {
 
+    static record Replacement(String leftHandSide, String rightHandSide) {
+    }
+
     private final static Pattern PATTERN = compile("(\\p{Alpha}+) => (\\p{Alpha}+)");
 
     private final String medicineMolecule;
@@ -27,7 +29,7 @@ public class Medicine {
     }
 
     long countDistinctMoleculesAfterOneReplacement() {
-        return generateNewMolecules(medicineMolecule, Replacement::getLeftHandSide, Replacement::getRightHandSide)
+        return generateNewMolecules(medicineMolecule, Replacement::leftHandSide, Replacement::rightHandSide)
                 .distinct()
                 .count();
     }
@@ -40,7 +42,7 @@ public class Medicine {
         if (molecule.equals("e")) {
             return OptionalInt.of(steps);
         }
-        return generateNewMolecules(molecule, Replacement::getRightHandSide, Replacement::getLeftHandSide)
+        return generateNewMolecules(molecule, Replacement::rightHandSide, Replacement::leftHandSide)
                 .map(s -> minimumNumberOfStepsToGenerateMedicineMolecule(s, steps + 1))
                 .filter(OptionalInt::isPresent)
                 .mapToInt(OptionalInt::getAsInt)
@@ -137,37 +139,5 @@ public class Medicine {
         Medicine medicine = new Medicine(molecule, replacements);
         System.out.printf("Number of distinct molecules after one replacement: %d\n", medicine.countDistinctMoleculesAfterOneReplacement());
         System.out.printf("Minimum number of steps to generate medicine molecule: %d\n", medicine.minimumNumberOfStepsToGenerateMedicineMolecule());
-    }
-}
-
-class Replacement {
-    private final String leftHandSide;
-    private final String rightHandSide;
-
-    public Replacement(String leftHandSide, String rightHandSide) {
-        this.leftHandSide = leftHandSide;
-        this.rightHandSide = rightHandSide;
-    }
-
-    public String getLeftHandSide() {
-        return leftHandSide;
-    }
-
-    public String getRightHandSide() {
-        return rightHandSide;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Replacement that = (Replacement) o;
-        return leftHandSide.equals(that.leftHandSide) &&
-                rightHandSide.equals(that.rightHandSide);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(leftHandSide, rightHandSide);
     }
 }
