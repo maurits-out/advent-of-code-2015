@@ -21,43 +21,22 @@ public class CodeGenerator {
                 column = column + 1;
             } else {
                 offset++;
-                row = 1 + offset;
+                row = offset + 1;
                 column = 1;
             }
             return code;
         }
     }
 
-    private static class Code {
-        private final int row;
-        private final int column;
-        private final long value;
-
-        public Code(int row, int column, long value) {
-            this.row = row;
-            this.column = column;
-            this.value = value;
-        }
-
-        public int getRow() {
-            return row;
-        }
-
-        public int getColumn() {
-            return column;
-        }
-
-        public long getValue() {
-            return value;
-        }
+    private static record Code(int row, int column, long value) {
     }
 
     private long findCode() {
         return Stream.generate(new CodeSupplier())
-                .filter(code -> code.getRow() == 2947 && code.getColumn() == 3029)
+                .filter(code -> code.row == 2947 && code.column == 3029)
                 .findFirst()
                 .orElseThrow()
-                .getValue();
+                .value();
     }
 
     public static void main(String[] args) {
