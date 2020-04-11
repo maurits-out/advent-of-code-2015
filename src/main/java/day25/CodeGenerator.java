@@ -1,9 +1,13 @@
 package day25;
 
 import java.util.function.Supplier;
-import java.util.stream.Stream;
+
+import static java.util.stream.Stream.generate;
 
 public class CodeGenerator {
+
+    private static record Code(int row, int column, long value) {
+    }
 
     private static class CodeSupplier implements Supplier<Code> {
 
@@ -28,11 +32,8 @@ public class CodeGenerator {
         }
     }
 
-    private static record Code(int row, int column, long value) {
-    }
-
     private long findCode() {
-        return Stream.generate(new CodeSupplier())
+        return generate(new CodeSupplier())
                 .filter(code -> code.row == 2947 && code.column == 3029)
                 .findFirst()
                 .orElseThrow()
@@ -40,7 +41,7 @@ public class CodeGenerator {
     }
 
     public static void main(String[] args) {
-        CodeGenerator generator = new CodeGenerator();
+        var generator = new CodeGenerator();
         System.out.printf("Code: %d\n", generator.findCode());
     }
 }
