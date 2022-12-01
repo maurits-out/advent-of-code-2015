@@ -1,3 +1,3 @@
 # Advent of Code 2015
 
-This repository contains my solutions for [Advent of Code 2015](https://adventofcode.com/2015). They are written in Java and regularly updated to the latest version.
+This repository contains my solutions for [Advent of Code 2015](https://adventofcode.com/2015). They are written in Java.
